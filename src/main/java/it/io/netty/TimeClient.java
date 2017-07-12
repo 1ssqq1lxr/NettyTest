@@ -102,11 +102,14 @@ public class TimeClient {
 							throws Exception {
 						// TODO Auto-generated method stub
 						// 解决粘包 拆包问题
+				
+//						ByteBuf buf = Unpooled.buffer("你".getBytes().length);
+//						buf.writeBytes("你".getBytes());
+//						ch.pipeline().addLast(new DelimiterBasedFrameDecoder(4048,buf));
+						ch.pipeline().addLast(new LineBasedFrameDecoder(4048));
 						ch.pipeline().addLast(new StringDecoder());
-						ByteBuf buf = Unpooled.buffer("你".getBytes().length);
-						buf.writeBytes("你".getBytes());
-						ch.pipeline().addLast(new DelimiterBasedFrameDecoder(4048,buf));
 		
+					
 			
 						ch.pipeline().addLast(new ChannelHandlerAdapter(){
 							// 处理异常
@@ -135,17 +138,20 @@ public class TimeClient {
 							public void channelActive(ChannelHandlerContext ctx)
 									throws Exception {
 								// TODO Auto-generated method stub
-								String msg ="我是你的人哦";
+								String msg ="我是你的人哦"+ System.getProperty("line.separator");
 								ByteBuf byteBuf  =null;;
 								for(int i=0;i<100;i++){
 									byteBuf  =Unpooled.buffer(msg.getBytes().length);
 									byteBuf.writeBytes(msg.getBytes());
 									ctx.writeAndFlush(byteBuf);
+//									Thread.sleep(1000);
 								}
 							}
 									
 						});
+						ch.pipeline().addLast(new StringDecoder());
 					}
+					
 				});
 				//绑定端口等待同步成功
 				ChannelFuture sync = bootstrap.connect(ip, port).sync();

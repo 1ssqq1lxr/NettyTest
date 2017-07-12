@@ -13,6 +13,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.LineBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 
 import java.net.InetSocketAddress;
@@ -102,10 +103,12 @@ public class TimeServer {
 					protected void initChannel(SocketChannel ch)
 							throws Exception {
 						// 解决粘包 拆包问题
+						ch.pipeline().addLast(new LineBasedFrameDecoder(4048));
 						ch.pipeline().addLast(new StringDecoder());
-						ByteBuf buf = Unpooled.copiedBuffer("你".getBytes());
-
-						ch.pipeline().addLast(new DelimiterBasedFrameDecoder(4048,buf));
+//						ByteBuf buf = Unpooled.copiedBuffer("你".getBytes());
+//
+//						ch.pipeline().addLast(new DelimiterBasedFrameDecoder(4048,buf));
+			
 		
 						// TODO Auto-generated method stub
 						ch.pipeline().addLast(new ChannelHandlerAdapter(){
@@ -128,18 +131,17 @@ public class TimeServer {
 						
 								System.out.println("server  accept  "+str+" msg :  " +buf+(++count));
 								
-								String msg1 ="你不是我的人是谁的人";
-								ByteBuf byteBuf = Unpooled.buffer(msg1.getBytes().length);
-								byteBuf.writeBytes(msg1.getBytes());
-								ctx.write(byteBuf);
+								String msg1 ="你不是我的人是谁的人"+ System.getProperty("line.separator");
+								ByteBuf byteBuf = Unpooled.copiedBuffer(msg1.getBytes());
+						        ctx.write(byteBuf);  
 							}
-							// 读取完成
-//							@Override
-//							public void channelReadComplete(
-//									ChannelHandlerContext ctx) throws Exception {
-//								// TODO Auto-generated method stub
-//								ctx.flush();
-//							}
+//							 读取完成
+							@Override
+							public void channelReadComplete(
+									ChannelHandlerContext ctx) throws Exception {
+								// TODO Auto-generated method stub
+								ctx.flush();
+							}
 									
 						});
 					}
