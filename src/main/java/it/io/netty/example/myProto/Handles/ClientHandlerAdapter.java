@@ -8,6 +8,7 @@ import it.io.netty.example.myProto.Proto.Header;
 import it.io.netty.example.myProto.Proto.Person;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,7 @@ import org.slf4j.LoggerFactory;
 public class ClientHandlerAdapter extends SimpleChannelInboundHandler<Entity<Serializable>> {
   	
 	private  Client client1;
-	
+	private static AtomicInteger i = new AtomicInteger(0);
 	public ClientHandlerAdapter(Client client1) {
 		super();
 		this.client1 = client1;
@@ -37,15 +38,20 @@ public class ClientHandlerAdapter extends SimpleChannelInboundHandler<Entity<Ser
 		p.setAge(22);
 		p.setName("lisi");
 		header.setBusinessCode("2222");
-		header.setSerialNo(123);
+		System.out.println("============:"+i.intValue());
+		if(i.intValue()==0){
+			header.setSerialNo(123);
+		}
 		entity.setHeader(header);
 		entity.setBody( p);
 		ctx.channel().writeAndFlush(entity);
+		i.incrementAndGet();
 	}
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		// TODO Auto-generated method stub
+		client1.connect();
 		super.channelInactive(ctx);
 	}
 
@@ -53,7 +59,7 @@ public class ClientHandlerAdapter extends SimpleChannelInboundHandler<Entity<Ser
 	public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
 			throws Exception {
 		// TODO Auto-generated method stub
-//		super.userEventTriggered(ctx, evt);
+		super.userEventTriggered(ctx, evt);
 		ctx.fireUserEventTriggered(evt);
 	}
 	@Override

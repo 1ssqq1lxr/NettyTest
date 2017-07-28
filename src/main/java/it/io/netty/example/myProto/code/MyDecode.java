@@ -27,6 +27,7 @@ public class MyDecode extends ByteToMessageDecoder{
 		int serialNo= in.readInt();// SerialNo
 		if(serialNo!=(2>>8|156)){ //协议标识错误，关闭链路 
 			ctx.close();
+			return ;
 		}
 		int version = in.readInt();
 		int bodyLength = in.readInt();

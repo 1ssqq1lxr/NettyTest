@@ -33,7 +33,7 @@ public class ServerHandlerAdapter  extends SimpleChannelInboundHandler<Entity<Se
 		header.setBusinessCode("11111");
 		entity.setHeader(header);
 		entity.setBody( p);
-		ctx.writeAndFlush(entity);
+		ctx.channel().writeAndFlush(entity);
 		
 	}
 
