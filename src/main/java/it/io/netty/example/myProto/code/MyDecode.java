@@ -31,9 +31,9 @@ public class MyDecode extends ByteToMessageDecoder{
 		}
 		int version = in.readInt();
 		int bodyLength = in.readInt();
+		
 		header.setVersion(version);
-		if(bodyLength>0){
-			byte[] bytes= new byte[bodyLength];
+		if(bodyLength>0&&serialNo!=2){
 			//			if(bodyLength)
 			if(in.readableBytes()<bodyLength){
 			    in.readerIndex(readerIndex);  //刷新指针

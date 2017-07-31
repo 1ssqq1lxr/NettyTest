@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 public class ClientHandlerAdapter extends SimpleChannelInboundHandler<Entity<Serializable>> {
   	
 	private  Client client1;
-	private static AtomicInteger i = new AtomicInteger(0);
 	public ClientHandlerAdapter(Client client1) {
 		super();
 		this.client1 = client1;
@@ -38,14 +37,9 @@ public class ClientHandlerAdapter extends SimpleChannelInboundHandler<Entity<Ser
 		p.setAge(22);
 		p.setName("lisi");
 		header.setBusinessCode("2222");
-		System.out.println("============:"+i.intValue());
-		if(i.intValue()==0){
-			header.setSerialNo(123);
-		}
 		entity.setHeader(header);
 		entity.setBody( p);
 		ctx.channel().writeAndFlush(entity);
-		i.incrementAndGet();
 	}
 
 	@Override
@@ -59,7 +53,7 @@ public class ClientHandlerAdapter extends SimpleChannelInboundHandler<Entity<Ser
 	public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
 			throws Exception {
 		// TODO Auto-generated method stub
-		super.userEventTriggered(ctx, evt);
+		sendHeat(ctx);
 		ctx.fireUserEventTriggered(evt);
 	}
 	@Override
@@ -69,7 +63,13 @@ public class ClientHandlerAdapter extends SimpleChannelInboundHandler<Entity<Ser
 		// TODO Auto-generated method stub
 		ctx.close();
 	}
-
+	private void sendHeat(ChannelHandlerContext ctx){
+		 Entity<Serializable>  entity= new  Entity<Serializable> ();
+		 Header header = new Header();
+		 header.setSerialNo(2);
+		 entity.setHeader(header);
+		 ctx.writeAndFlush(entity);
+	}
 	
 	
 }

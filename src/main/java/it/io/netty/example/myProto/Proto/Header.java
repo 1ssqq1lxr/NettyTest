@@ -11,10 +11,10 @@ public class Header implements Serializable{
 	 * 
 	 */
 	private   long serialVersionUID = 100000000L;
-	private   int  serialNo=2>>8|156;
+	private   int  serialNo=2>>8|156; // 2ping pong消息 
 	private int version =1;
 	private int bodyLength;
-	private String businessCode;//1 普通消息 2ping pong消息 
+	private String businessCode;//
 	
 	public  void setSerialNo(int serialNo) {
 		this.serialNo = serialNo;
