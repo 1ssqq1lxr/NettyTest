@@ -11,6 +11,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 import it.io.netty.example.myProto.Handles.ClientHandlerAdapter;
 import it.io.netty.example.myProto.code.MyDecode;
 import it.io.netty.example.myProto.code.MyEncode;
+import it.io.netty.example.myProto.heart.ChannelConnect;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -45,48 +46,31 @@ public class Client extends AbstractBaseClient{
 				ch.pipeline().addLast(new MyDecode());
 				ch.pipeline().addLast(new  ClientHandlerAdapter(Client.this));
 				ch.pipeline().addLast(new IdleStateHandler(20, 30, 60,TimeUnit.SECONDS));
-			
-				 //检测链路是否读空闲    	
+
+				//检测链路是否读空闲    	
 			}
 		}) .option(ChannelOption.SO_KEEPALIVE, true);;
 		this.connect();
 	}
 
 	@Override
-	public void connect() {
-//		try {
-//			ChannelFuture sync = b.connect("127.0.0.1",8099).sync();
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+	public  ChannelFuture connect() {
 		ChannelFuture sync = b.connect("127.0.0.1",8099);
 		sync.addListener(new ChannelFutureListener(){
 
 			public void operationComplete(ChannelFuture future)
 					throws Exception {
 				// TODO Auto-generated method stub
-				 	if (future.isSuccess()) {
-		              	Channel  channel = future.channel();
-		                System.out.println("Connect to server successfully!");
-		            } else {
-		                System.out.println("Failed to connect to server, try connect after 10s");
-		 
-		                
-		                executorService.scheduleAtFixedRate(new Runnable() {
-							
-							public void run() {
-								// TODO Auto-generated method stub
-								
-								logger.info("重连中");
-								Client.this.connect();
-							}
-						},  23, 50, TimeUnit.SECONDS);
-		            }
+				if (future.isSuccess()) {
+					Channel  channel = future.channel();
+					System.out.println("Connect to server successfully!"+channel.toString());
+				} else {
+					System.out.println("Failed to connect to server, try connect after 10s");
+					executorService.execute(new ChannelConnect(Client.this));
+				}
 			}
-			
 		});
-
+		return sync;
 	}
 	public static void main(String[] args) {
 		Client client = new Client(11113);

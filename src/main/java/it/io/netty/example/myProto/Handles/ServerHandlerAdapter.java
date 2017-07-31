@@ -46,6 +46,7 @@ public class ServerHandlerAdapter  extends SimpleChannelInboundHandler<Entity<Se
 	}
 
 	@Override
+	
 	public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
 			throws Exception {
 		// TODO Auto-generated method stub
@@ -67,6 +68,12 @@ public class ServerHandlerAdapter  extends SimpleChannelInboundHandler<Entity<Se
 			throws Exception {
 		// TODO Auto-generated method stub
 		ctx.close();
+	}
+
+	@Override
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		// TODO Auto-generated method stub
+		super.channelInactive(ctx);
 	}
 	
 }

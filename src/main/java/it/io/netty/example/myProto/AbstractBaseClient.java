@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public abstract class AbstractBaseClient implements Base{
-	abstract void connect();
+	abstract ChannelFuture connect();
 	protected Logger logger = LoggerFactory.getLogger(getClass());
     protected String host = "localhost";
     protected int port = 8099;
