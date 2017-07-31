@@ -48,8 +48,9 @@ public class Server  extends AbstractBaseServer {
                     protected void initChannel(SocketChannel ch) throws Exception {
                     	ch.pipeline().addLast(new MyDecode());
                     	ch.pipeline().addLast(new MyEncode());
+                    	ch.pipeline().addLast(new IdleStateHandler(15,0 , 0));
         				ch.pipeline().addLast(new  ServerHandlerAdapter());
-        				ch.pipeline().addLast(new IdleStateHandler(20, 30, 40,TimeUnit.SECONDS));
+        			
                     }
                 }) .childOption(ChannelOption.SO_KEEPALIVE, true);;
 

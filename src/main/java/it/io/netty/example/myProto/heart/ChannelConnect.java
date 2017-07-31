@@ -27,7 +27,6 @@ public class ChannelConnect implements Runnable{
 
 	public void run() {
 		// TODO Auto-generated method stub
-			boolean open=true;
 			// TODO Auto-generated method stub
 			try {
 				// TODO Auto-generated method stub

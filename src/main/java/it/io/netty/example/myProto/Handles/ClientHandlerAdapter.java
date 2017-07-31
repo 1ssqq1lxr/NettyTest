@@ -2,13 +2,14 @@ package it.io.netty.example.myProto.Handles;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 import it.io.netty.example.myProto.Client;
 import it.io.netty.example.myProto.Proto.Entity;
 import it.io.netty.example.myProto.Proto.Header;
 import it.io.netty.example.myProto.Proto.Person;
 
 import java.io.Serializable;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +40,7 @@ public class ClientHandlerAdapter extends SimpleChannelInboundHandler<Entity<Ser
 		header.setBusinessCode("2222");
 		entity.setHeader(header);
 		entity.setBody( p);
-		ctx.channel().writeAndFlush(entity);
+ 		ctx.channel().writeAndFlush(entity);
 	}
 
 	@Override
@@ -53,7 +54,11 @@ public class ClientHandlerAdapter extends SimpleChannelInboundHandler<Entity<Ser
 	public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
 			throws Exception {
 		// TODO Auto-generated method stub
-		sendHeat(ctx);
+		IdleStateEvent e = (IdleStateEvent) evt; 
+		if(e.state().equals(IdleState.READER_IDLE)){
+			sendHeat(ctx);
+			
+		}
 		ctx.fireUserEventTriggered(evt);
 	}
 	@Override
@@ -69,6 +74,7 @@ public class ClientHandlerAdapter extends SimpleChannelInboundHandler<Entity<Ser
 		 header.setSerialNo(2);
 		 entity.setHeader(header);
 		 ctx.writeAndFlush(entity);
+		 logger.info("发送心跳成功====================={}"+entity.toString());
 	}
 	
 	

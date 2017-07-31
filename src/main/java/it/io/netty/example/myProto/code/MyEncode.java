@@ -18,10 +18,9 @@ public class MyEncode extends MessageToByteEncoder<Entity<Serializable>> {
 			ByteBuf out) throws Exception {
 		// TODO Auto-generated method stub
 		int serialNo = msg.getHeader().getSerialNo();
-		String businessCode = msg.getHeader().getBusinessCode();
 		out.writeInt(serialNo);
 		out.writeInt(msg.getHeader().getVersion());
-		out.writeBytes(businessCode.getBytes());
+		boolean s =msg.getBody()!=null&&serialNo!=2;
 		if(msg.getBody()!=null&&serialNo!=2){
 			byte[] objectToByte = ByteObjConverter.objectToByte(msg.getBody());
 			out.writeInt(objectToByte.length);

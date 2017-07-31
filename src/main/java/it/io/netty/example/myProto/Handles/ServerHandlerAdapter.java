@@ -20,21 +20,28 @@ public class ServerHandlerAdapter  extends SimpleChannelInboundHandler<Entity<Se
   	
 	private static List<Channel> channels = new ArrayList<Channel>();
 	protected Logger logger = LoggerFactory.getLogger(getClass());
+	
+	private int num ;
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, Entity<Serializable> msg)
 			throws Exception {
-		logger.info("success accept client, port is:{}", msg.toString());	
-		// TODO Auto-generated method stub
-		Entity<Serializable> entity = new Entity<Serializable>();
-		Header header = new Header();
-		Person p = new Person();
-		p.setAge(11);
-		p.setName("zhangsan");
-		header.setBusinessCode("11111");
-		entity.setHeader(header);
-		entity.setBody( p);
-		ctx.channel().writeAndFlush(entity);
 		
+		// TODO Auto-generated method stub
+		if(msg.getHeader().getSerialNo()!=2){
+			logger.info("success accept client, port is:{}", msg.toString());	
+			Entity<Serializable> entity = new Entity<Serializable>();
+			Header header = new Header();
+			Person p = new Person();
+			p.setAge(11);
+			p.setName("zhangsan");
+			header.setBusinessCode("11111");
+			entity.setHeader(header);
+	 		entity.setBody( p);
+			ctx.channel().writeAndFlush(entity);
+		}
+		else{
+			logger.info("=========收到心跳检测==========={}", msg.toString());	
+		}
 	}
 
 	@Override
@@ -45,23 +52,7 @@ public class ServerHandlerAdapter  extends SimpleChannelInboundHandler<Entity<Se
 		super.channelActive(ctx);
 	}
 
-	@Override
-	
-	public void userEventTriggered(ChannelHandlerContext ctx, Object evt)
-			throws Exception {
-		// TODO Auto-generated method stub
-		IdleStateEvent evnet =(IdleStateEvent)evt;
-		if(IdleState.READER_IDLE.equals(evnet.state())){// 读超时
-				
-		}
-		else if(IdleState.WRITER_IDLE.equals(evnet.state())){// 写超时
-			
-		}
-		else{// 全超时
-			
-		}
-		super.userEventTriggered(ctx, evt);
-	}
+
 	@Override
 	public void exceptionCaught(
 			ChannelHandlerContext ctx, Throwable cause)

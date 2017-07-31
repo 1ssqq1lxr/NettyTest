@@ -44,12 +44,13 @@ public class Client extends AbstractBaseClient{
 			protected void initChannel(SocketChannel ch) throws Exception {
 				ch.pipeline().addLast(new MyEncode());
 				ch.pipeline().addLast(new MyDecode());
+				ch.pipeline().addLast(new IdleStateHandler(20, 0, 0));
 				ch.pipeline().addLast(new  ClientHandlerAdapter(Client.this));
-				ch.pipeline().addLast(new IdleStateHandler(20, 30, 60,TimeUnit.SECONDS));
+				
 
 				//检测链路是否读空闲    	
 			}
-		}) .option(ChannelOption.SO_KEEPALIVE, true);;
+		});
 		this.connect();
 	}
 
